@@ -1,0 +1,138 @@
+
+    /*
+
+
+
+    public void load() {
+
+        listOfItems = new ArrayList<Item>();
+// Manually instantiated Items
+        Item nokia = new Item("nokia", 878);
+
+// Created a list of the instances
+        listOfItems.add(nokia);
+        listOfItems.add(new Item("iphone12", 100));
+        listOfItems.add(new Item("samsungGlaxy", 102));
+        listOfItems.add(new Item("onePlus", 565));
+        System.out.println("ListofItems Contents");
+        for (Item listOfItem : listOfItems) {
+            System.out.println(listOfItem.getItemName() + "  " + listOfItem.getItemCode());
+
+        }
+
+
+        //loading list of Item instances and their item codes in a Map
+
+
+        Map<Item, Integer> listOfItemsAndCodes = new HashMap<Item, Integer>();
+        for (Item item : listOfItems) {
+            listOfItemsAndCodes.put(item, item.getItemCode());
+        }
+        for (Map.Entry<Item, Integer> item1 : listOfItemsAndCodes.entrySet()) {
+            System.out.println("ListofItemsAndCodes   " + item1.getKey().getItemName() + "  " + item1.getValue());
+
+        }
+
+//Reading Excel Sheet for further attributes
+        ExcelReader excelReader = new ExcelReader("InventoryData.xlsx", "Sheet1");
+        //System.out.println(excelReader.getCellValue(0, 0));
+
+        int rows = excelReader.getRowCount();
+        int cols = excelReader.getColumnCount();
+
+
+//simple printout of the contents of the Excel sheet
+        System.out.println("Excel Sheet Print out");
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+
+                System.out.print(excelReader.getCellValue(i, j) + "     ");
+            }
+            System.out.println();
+        }
+
+        System.out.println("*****************************");
+
+
+        // iter through the excel sheet and check if itemcode already exists
+        // in list of instances and if it does then add the rest of the attributes
+Map.Entry<Item,Integer> ;
+        for (int i = 1; i < rows; i++) {
+
+            String itemCode = excelReader.getCellValue(i, 0);
+            System.out.println(itemCode);
+            Integer intItemCode = Integer.parseInt(itemCode);
+            System.out.println(intItemCode);
+
+
+                if (listOfItemsAndCodes.containsValue(intItemCode)) {
+                    //  listOfItemsAndCodes.put(entry.getKey(),entry.getValue());
+                    String itemQuantity = excelReader.getCellValue(i, 3);
+                    Integer intItemQuantity = Integer.parseInt(itemQuantity);
+
+                    for (Item listOfItem : listOfItems) {
+                        System.out.println(listOfItem.getItemName() + "  " + listOfItem.getItemCode() + "   " + listOfItem.getItemPrice());
+
+
+
+
+                }
+//
+//                else {
+//                    System.out.println("Product already exists");
+            }
+//                System.out.println(entry.getKey() + "    " + entry.getValue());
+
+//            }
+//        }
+
+
+            //      stock = new TreeMap<Item, Integer>();
+
+
+            //listOfItems = new ArrayList<>();
+            //for (int k = 1; k < rows; k++) {
+
+//            String itemCode = excelReader.getCellValue(k,0);
+
+            //          Integer intItemCode =  Integer.parseInt(itemCode);
+
+            //  String itemName = excelReader.getCellValue(k, 1);
+
+
+            //listOfItems.add(new Item(itemName));
+
+        }
+
+        for (Item listOfItem : listOfItems) {
+            System.out.println(listOfItem.getItemName() + "  " + listOfItem.getItemCode() + "   " + listOfItem.getItemPrice());
+
+        }
+    }
+     //   for (Item item : listOfItems) {
+
+            for (int m = 1; m < rows; m++) {
+            for (int l = 0; l < cols; l++){
+                String itemCode = excelReader.getCellValue(m,l);
+                Integer intItemCode =  Integer.parseInt(itemCode);
+                item.setItemCode(intItemCode);
+      //          Integer  intItemQuantity = Integer.parseInt(itemQuantity);
+      //          String itemQuantity = excelReader.getCellValue(k,3);
+
+    //int r = 1;
+    //for (Item item : listOfItems) {
+    //    String itemCode = excelReader.getCellValue(r, 0);
+    //    Integer intItemCode = Integer.parseInt(itemCode);
+    //    item.setItemCode(intItemCode);
+
+    //    String itemQuantity = excelReader.getCellValue(r, 3);
+    //    Integer intItemQuantity = Integer.parseInt(itemQuantity);
+    //    item.setItemPrice(intItemQuantity);
+
+    //   System.out.println(item.getItemName() + "   " + item.getItemCode() + "   " + item.getItemPrice());
+    //r++;
+
+    //
+
+
+*/
