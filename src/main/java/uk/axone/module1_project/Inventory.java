@@ -3,7 +3,6 @@ package uk.axone.module1_project;
 import java.util.*;
 
 
-
 public class Inventory implements Comparable<Item> {
 
     //Declarations of collections used

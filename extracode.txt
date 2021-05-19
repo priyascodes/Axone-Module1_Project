@@ -1,4 +1,29 @@
 
+ /*
+
+  ****************************************************************************************
+  Code to get key from specified value
+
+
+
+
+     for (Item itemkey : listOfItemsAndCodes.keySet()) {
+             if (intItemCode.equals(listOfItemsAndCodes.get(itemkey))) {
+             String itemPrice = excelReader.getCellValue(i, 4);
+             Integer intItemPrice = Integer.parseInt(itemPrice);
+             //       System.out.println(intItemPrice);
+             itemkey.setItemPrice(intItemPrice);
+
+             }
+
+             }
+
+     **********************************************************************
+*/
+
+
+
+
     /*
 
 

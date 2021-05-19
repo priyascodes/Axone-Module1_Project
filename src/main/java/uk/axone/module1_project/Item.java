@@ -9,7 +9,7 @@ public class Item implements Comparable<Item>  {
     private String itemDescription;
     private int itemPrice;
 
-    public Item(String newItemName, Integer newItemCode) throws InvalidDataException{
+    public Item(final String newItemName, final Integer newItemCode) throws InvalidDataException{
         try {
             setItemCode(newItemCode);
         } catch (InvalidDataException de){
@@ -25,7 +25,7 @@ public class Item implements Comparable<Item>  {
         return itemCode;
     }
 
-    public void setItemCode(int itemCode) throws InvalidDataException {
+    public void setItemCode(final int itemCode) throws InvalidDataException {
 
         if (itemCode > 99 && itemCode < 1000) {
 
@@ -42,7 +42,7 @@ public class Item implements Comparable<Item>  {
         return itemName;
     }
 
-    public void setItemName(String itemName) {
+    public void setItemName(final String itemName) {
         this.itemName = itemName;
     }
 
@@ -52,7 +52,7 @@ public class Item implements Comparable<Item>  {
         return itemPrice;
     }
 
-    public void setItemPrice(int itemPrice) {
+    public void setItemPrice(final int itemPrice) {
         this.itemPrice = itemPrice;
     }
 
@@ -65,7 +65,7 @@ public class Item implements Comparable<Item>  {
         return itemDescription;
     }
 
-    public void setItemDescription(String itemDescription) {
+    public void setItemDescription(final String itemDescription) {
         this.itemDescription = itemDescription;
     }
 }
