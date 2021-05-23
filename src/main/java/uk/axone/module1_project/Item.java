@@ -2,21 +2,25 @@ package uk.axone.module1_project;
 
 
 
-public class Item implements Comparable<Item>  {
+public class Item implements Comparable<Item> {
 
     private int itemCode;
     private String itemName;
     private String itemDescription;
-    private int itemPrice;
+    private double itemPrice;
 
-    public Item(final String newItemName, final Integer newItemCode) throws InvalidDataException{
-        try {
-            setItemCode(newItemCode);
-        } catch (InvalidDataException de){
-           System.out.println("Invalid Code");;
-            System.out.println(de.getMessage());
-        }
+
+    public Item(final Integer newItemCode) {
+        setItemCode(newItemCode);
+
+    }
+
+    public Item(final String newItemName, final Integer newItemCode, final String newItemDescription,
+                Double newItemPrice) {
+        setItemCode(newItemCode);
+        setItemDescription(newItemDescription);
         setItemName(newItemName);
+        setItemPrice(newItemPrice);
 
     }
 
@@ -25,16 +29,9 @@ public class Item implements Comparable<Item>  {
         return itemCode;
     }
 
-    public void setItemCode(final int itemCode) throws InvalidDataException {
+    public void setItemCode(final int itemCode) {
 
-        if (itemCode > 99 && itemCode < 1000) {
-
-            this.itemCode = itemCode;
-
-        } else {
-
-            throw new InvalidDataException("Invalid Code1");
-        }
+        this.itemCode = itemCode;
     }
 
 
@@ -47,12 +44,11 @@ public class Item implements Comparable<Item>  {
     }
 
 
-
-    public int getItemPrice() {
+    public double getItemPrice() {
         return itemPrice;
     }
 
-    public void setItemPrice(final int itemPrice) {
+    public void setItemPrice(final double itemPrice) {
         this.itemPrice = itemPrice;
     }
 
