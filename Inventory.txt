@@ -1,12 +1,15 @@
 package uk.axone.module1_project;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.sql.SQLOutput;
 import java.util.*;
 
 
 public class Inventory implements Comparable<Item> {
 
     //Declarations of Collections used
-    final private Map<Item, Integer> stock = new HashMap<>();
+    private Map<Item, Integer> stock = new HashMap<>();
 
     private List<Item> listOfItems;
     private Map<Item, Integer> listOfItemsAndCodes;
@@ -17,8 +20,11 @@ public class Inventory implements Comparable<Item> {
 
     //Constructor declaration
     public Inventory() throws InvalidDataException {
-        this.load();
-
+        try {
+            this.load();
+        } catch (InvalidDataException ide) {
+            System.out.println("this one " + ide.getMessage());
+        }
     }
 
     //PRIVATE METHOD load() to populate the data*********************************************************
@@ -70,7 +76,7 @@ public class Inventory implements Comparable<Item> {
                 //double dblItemPrice = dblExcelItemPrice;
 
                 item = new Item(excelItemName, intExcelItemCode, excelItemDescription, dblExcelItemPrice);
-                System.out.println(item.getItemName() + "  " + item.getItemCode() + "  " + item.getItemDescription() + "  " + item.getItemPrice());
+                System.out.println(item.getItemName() + item.getItemCode() + item.getItemDescription() + item.getItemPrice());
 
                 // 5)
                 String excelItemQuantity = excelReader.getCellValue(i, 3);
@@ -118,7 +124,7 @@ public class Inventory implements Comparable<Item> {
 
         System.out.println("LIST OF ITEMS AND CODES");
         for (Map.Entry<Item, Integer> listCodesSet : listOfItemsAndCodes.entrySet()) {
-            System.out.println(listCodesSet.getKey().getItemName() + "  " + listCodesSet.getValue());
+            System.out.println(listCodesSet.getKey() + "  " + listCodesSet.getValue());
 
         }
     }   //END OF LOAD METHOD************************************************************************
@@ -129,25 +135,42 @@ public class Inventory implements Comparable<Item> {
 
 
         boolean result = false;
+        System.out.println(" it value recieved in checkItem method :  " + it.getItemCode() + it.getItemName());
 
         for (Map.Entry<Item, Integer> it1 : listOfItemsAndCodes.entrySet()) {
 
             if (it1.getValue().equals(it.getItemCode())) {
 
-                controlItem = it1.getKey();
+                //      System.out.println("ITem found");
+                //      System.out.println(" it1 found in checkItem() is   " + it1 + "  " + it1.getValue() + it
+                //      .getItemPrice());
+                //      System.out.println(" it found in checkItem() is   " + it + it.getItemName() + it.getItemPrice
+                //      ());
 
+                it = it1.getKey();
+
+                // controlItem = it1.getKey();
+
+                //      System.out.println(" it value after it = it1" + it +  it.getItemName() + it.getItemCode() + it
+                //      .getItemDescription());
                 result = true;
                 break;
+
+            } else {
+
+                System.out.println("Item not found yet");
+                //throw new ItemNotFoundException("Item Not Found Exception");
 
             }
 
         } // - end of search for-loop
         if (result) {
-            return controlItem;
+            System.out.println("Item Found in checkItem() method");
+            return it;
 
         } else {
             System.out.println("Item not found in checkItem() method. Throwing Exception");
-            throw new ItemNotFoundException("Item not found Exception - checkItem()");
+            throw new ItemNotFoundException("Item not found Exception");
         }
 
 
@@ -161,11 +184,18 @@ public class Inventory implements Comparable<Item> {
 // boolean reduceStock(Item it, Integer quantity) throws ItemNotFoundException
 //    o returns true if the operation is successful
 
-    public boolean reduceStock(Item it, final Integer quantity) throws ItemNotFoundException {
+    public Item reduceStock(Item itemToReduce, final Integer quantity) throws ItemNotFoundException,
+            InvalidDataException {
 
-        controlItem = checkItem(it);
+        // check if item is found - exists
+        try {
+            controlItem = checkItem(itemToReduce);
+        } catch (ItemNotFoundException inf) {
+            System.out.println(inf.getMessage());
+        }
+        System.out.println("controlItem value at beginning of reduceStock method" + controlItem.getItemName() + controlItem.getItemCode() + controlItem.getItemPrice() + controlItem.getItemDescription() + stock.get(controlItem));
 
-        final Integer currentStockQuantity = stock.get(controlItem);
+        final Integer oldQuantity = stock.get(controlItem);
         final Integer newQuantity;
 
 
@@ -173,29 +203,26 @@ public class Inventory implements Comparable<Item> {
 
             System.out.println("Invalid Quantity entered");
 
-        } else if (quantity <= currentStockQuantity) {
-            newQuantity = currentStockQuantity - quantity;
+        } else if (quantity <= oldQuantity) {
+            newQuantity = oldQuantity - quantity;
             if (newQuantity == 0) {
-                System.out.println("Item reduced in stock");
-                System.out.println("Item" + "  " + controlItem.getItemName() + "now  out of stock");
-                stock.replace(controlItem, currentStockQuantity, newQuantity);
+                System.out.println("Item" + "  " + controlItem.getItemName() + "  out of stock");
+                stock.replace(controlItem, oldQuantity, newQuantity);
                 System.out.println(controlItem.getItemName() + "  " + stock.get(controlItem));
-                return true;
 
             } else {
-                stock.replace(controlItem, currentStockQuantity, newQuantity);
-                System.out.println("Item Stock after reducing stock  " + stock.get(controlItem));
-                return true;
+                stock.replace(controlItem, oldQuantity, newQuantity);
+                System.out.println("replace statement  " + stock.get(controlItem));
 
             }
 
-        } else {
+        } else if (quantity > oldQuantity) {
 
             System.out.println("Item quantity to be reduced is larger than in stock. Invalid.");
-            return false;
 
         }
-        return false;
+
+        return controlItem;
 
     } //-----------------------------End of reduceStock()------------------------------------------------*/
 
@@ -204,15 +231,13 @@ public class Inventory implements Comparable<Item> {
     //   - boolean validateItem(Item it) throws ItemNotFoundException
     //   o returns true if the itemCode of the Item passed matches a product in the list
 
-    public boolean validateItem(Item it) throws ItemNotFoundException {
+    public boolean validateItem(Item newItem) throws ItemNotFoundException {
 
-        System.out.println("In validate() method");
-
-        controlItem = checkItem(it);
-
-        if (!controlItem.equals(it)) {
+        if (listOfItemsAndCodes.containsValue(newItem.getItemCode())) {
+            System.out.println("Item exists");
             return true;
         } else {
+
             throw new ItemNotFoundException("Item not FOUND Exception");
 
         }
@@ -225,25 +250,30 @@ public class Inventory implements Comparable<Item> {
 //    o returns the number of items in stock for the Item passed.
 
     public int getItemStock(Item it) throws ItemNotFoundException {
+        System.out.println("it received in getItemStock()  " + it.getItemCode() + it.getItemName());
+
 
         int itemStockQuantity;
-        controlItem = checkItem(it);
-        itemStockQuantity = stock.get(controlItem);
-
+        try {
+            controlItem = checkItem(it);
+            itemStockQuantity = stock.get(controlItem);
+        } catch (ItemNotFoundException inf) {
+            throw new ItemNotFoundException(inf.getMessage());
+        }
         return itemStockQuantity;
     }
 //-----------------------------End of getItemStock()--------------------------------------------------
 
-    public Item getItem(Item it) {
-        System.out.println("it received in getItemStock()  " + it.getItemCode() + "  " + it.getItemName());
+    public Item getItem(Item it) throws ItemNotFoundException {
+        System.out.println("it received in getItemStock()  " + it.getItemCode() + it.getItemName());
 
         for (Item it1 : listOfItems) {
 
             if (it1.getItemCode() == it.getItemCode()) {
-                controlItem = it1;
+                it = it1;
             }
         }
-        return controlItem;
+        return it;
     }
 
 
@@ -266,16 +296,10 @@ public class Inventory implements Comparable<Item> {
     //Override method from Comparable Class
 
     @Override
-    public int compareTo(Item it) {
-
-        if (item.getItemCode() > it.getItemCode()) {
-            return -1;
-        } else if (item.getItemCode() < it.getItemCode()) {
-            return 1;
-        } else {
-            return 0;
-        }
+    public int compareTo(Item o) {
+        return 0;
     }
+
 
     @Override
     public int hashCode() {

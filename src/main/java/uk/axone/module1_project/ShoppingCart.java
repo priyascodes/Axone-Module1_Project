@@ -10,10 +10,15 @@ public class ShoppingCart {
     public Inventory shopInventory;
 
     // CONSTRUCTOR
-    public ShoppingCart() throws InvalidDataException {
+    public ShoppingCart() {
 
         cart = new HashMap<Item, Integer>();
-        shopInventory = new Inventory();
+        try {
+            shopInventory = new Inventory();
+        } catch (InvalidDataException ide) {
+            System.out.println(ide.getMessage());
+        }
+
     }  // End of Constructor
 
 
@@ -21,33 +26,28 @@ public class ShoppingCart {
    /* Adds a single item to the cart, checking if the Item is valid and in stock
     o Returns true if added successfully  */
 
-    public boolean addToCart(Item it) throws ItemNotFoundException, ItemOutOfStockException, InvalidDataException {
+    public boolean addToCart(Item it) throws ItemNotFoundException, ItemOutOfStockException {
+
 
         if (shopInventory.validateItem(it)) {
             int n = shopInventory.getItemStock(it);
             if (n > 0) {
                 System.out.println("Item in stock. Quantity available is:  " + n);
                 it = shopInventory.getItem(it);
-                cart.put(it, n);
-                for (Item it1 : cart.keySet()) {
-                    System.out.println(it1.getItemName() + it1.getItemCode());
-
-                }
+                cart.put(it, 1);
                 return true;
             } else {
                 System.out.println("Sorry, Item is out of stock" + n);
                 throw new ItemOutOfStockException("Item is Out of Stock");
             }
-        } else {
-            System.out.println("Item not Found");
-            throw new ItemNotFoundException("Item not found");
         }
+        return false;
 
 
-    }  // End of Method 1
+    }  // End of Method 1  test
 
 
-    /* // Method 2
+    /* // Second addToCart Method
         o Adds multiple items to cart, checking if the Item is valid and in stock
         o Returns true if added successfully
     */
@@ -69,43 +69,9 @@ public class ShoppingCart {
                 System.out.println("Do not have sufficient stock of this item");
                 return false;
             }
-
-        } else {
-            throw new ItemOutOfStockException((" addToCart(Item, quantity) validate - Item Not FOund"));
         }
+        return false;
     }  // End of Method 2
-
-
-
-
-
-/*
-            if (shopInventory.validateItem(it)) {
-                int n = shopInventory.getItemStock(it);
-                if (n > quantity) {
-                    System.out.println("Item in stock. Quantity available is:  " + n);
-                    it = shopInventory.getItem(it);
-                    if (cart.isEmpty()) {
-
-                        cart.put(it, quantity);
-                    }
-
-                }
-
-                for (Map.Entry<Item, Integer> it1 : cart.entrySet()) {
-                    System.out.println(it1.getKey().getItemName() + "  " + it1.getValue());
-
-                }
-                return true;
-            }
-            /*else {
-                System.out.println("Sorry, Item is out of stock"  +  n);
-                throw new ItemOutOfStockException("Item is Out of Stock");
-            }
-        } else {
-        System.out.println("Item not Found");
-        throw new ItemNotFoundException("Item not found");
-    } */
 
 
     /*  // Method 3
@@ -113,31 +79,61 @@ public class ShoppingCart {
       o Returns true if removed successfully
       */
     public boolean removeFromCart(Item it) throws ItemNotInCartException {
-        return false;
+        it = shopInventory.getItem(it);
+        if (cart.containsKey(it)) {
+            cart.remove(it, it.getItemCode());
+            return true;
+        } else {
+            throw new ItemNotInCartException("Item not in Cart exception at removeItemFromCart()");
+        }
     }
 
     /*   Method 4
     o Returns the total cost of items in the cart at any point
     */
 
-//    public long calculateTotalCost(){
+    public long calculateTotalCost() {
+        long totalCost = 0;
+        long productCost;
+        for (Map.Entry<Item, Integer> itemInCart : cart.entrySet()) {
+            Double doublePrice = itemInCart.getKey().getItemPrice();
+            long price = doublePrice.longValue();
 
-//    }
+            int quantityRequired = itemInCart.getValue();
+            long longQuantityRequired = quantityRequired;
+
+
+            productCost = price * longQuantityRequired;
+            totalCost += productCost;
+
+        }
+        return totalCost;
+    }
 
 
     /*  Method 5
     o Returns the items in the cart as an array
       */
-    //       public Items[] getCartContents(){
-    //
-    //       }
-
+    public Item[] getCartContents() {
+        int i = cart.size();
+        Item[] listOfCartContents = new Item[i];
+        int x = 0;
+        for (Map.Entry<Item, Integer> cartContents : cart.entrySet()) {
+            listOfCartContents[x] = cartContents.getKey();
+            x++;
+        }
+        return listOfCartContents;
+    }
 
 
 /*   Method 6
 o Will reduce the stock levels for the items being checkedOut  */
 
-    public void checkout() {
+    public void checkout() throws InvalidDataException, ItemNotFoundException {
+        for (Map.Entry<Item, Integer> cartContentsToCheckout : cart.entrySet()) {
+            shopInventory.reduceStock(cartContentsToCheckout.getKey(), cartContentsToCheckout.getValue());
+            cart.remove(cartContentsToCheckout.getKey(), cartContentsToCheckout.getValue());
+        }
 
     }
 
